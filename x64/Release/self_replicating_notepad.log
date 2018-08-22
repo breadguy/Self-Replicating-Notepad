@@ -1,5 +1,7 @@
 ﻿  Main.cpp
   Generating code
-  All 8 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  1 of 8 functions (12.5%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   self_replicating_notepad.vcxproj -> C:\dev\self_replicating_notepad\x64\Release\self_replicating_notepad.exe

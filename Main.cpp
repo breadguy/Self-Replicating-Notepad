@@ -55,6 +55,11 @@ int WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int c
 				}
 				for (int run = 0; run < amount; run++)
 				{
+					if (GetAsyncKeyState(VK_F12))
+					{
+						MessageBoxA(0, "[BG] Self-Replicating Notepad v1", "Credits", MB_ICONINFORMATION);
+						exit(0);
+					}
 					RunNew();
 				}
 
